@@ -3,422 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MBR Insight Formatter</title>
+    <title>MBR Status Update Formatter</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
         
         .container {
-            max-width: 900px;
-            margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
         }
         
-        .subtitle {
-            color: #666;
+        .guidelines {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 30px;
-            font-size: 1.1em;
+            border-left: 4px solid #3498db;
+        }
+        
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
         
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
         label {
             display: block;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 1.05em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
         }
         
-        .help-text {
-            font-size: 0.85em;
-            color: #888;
-            margin-top: 4px;
-            font-style: italic;
-        }
-        
-        input, textarea, select {
+        input, select, textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: border-color 0.3s;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
         
-        input:focus, textarea:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
             outline: none;
-            border-color: #667eea;
         }
         
-        textarea {
-            resize: vertical;
-            min-height: 60px;
+        .helper-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
         }
         
-        .metric-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 15px;
-            align-items: end;
-        }
-        
-        .arrow {
-            padding-bottom: 12px;
-            font-size: 1.5em;
-            color: #667eea;
-            text-align: center;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .output {
+            background-color: #2c3e50;
             color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            font-weight: 600;
+            padding: 20px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            min-height: 50px;
+        }
+        
+        .validation {
+            padding: 15px;
+            border-radius: 5px;
             margin-top: 10px;
         }
         
+        .valid {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            background-color: #2980b9;
         }
         
-        button:active {
-            transform: translateY(0);
+        .clear-btn {
+            background-color: #95a5a6;
         }
         
-        .output-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid #e0e0e0;
-        }
-        
-        .output-box {
-            background: #f8f9fa;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            padding: 25px;
-            margin-top: 15px;
-            position: relative;
-        }
-        
-        .output-text {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #333;
-            word-wrap: break-word;
-        }
-        
-        .copy-btn {
-            margin-top: 15px;
-            background: #10b981;
-            width: auto;
-            padding: 10px 25px;
-            font-size: 0.95em;
-        }
-        
-        .copy-btn:hover {
-            background: #059669;
-        }
-        
-        .copy-btn.copied {
-            background: #6366f1;
+        .clear-btn:hover {
+            background-color: #7f8c8d;
         }
         
         .examples {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-        }
-        
-        .examples h3 {
-            color: #f59e0b;
-            margin-bottom: 15px;
+            background-color: #f1f2f6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
         }
         
         .example-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #fde68a;
+            margin-bottom: 10px;
         }
         
-        .example-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        .good-example {
+            color: #27ae60;
         }
         
-        .hidden {
-            display: none;
-        }
-        
-        .quality-score {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-            padding: 10px 15px;
-            background: white;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        
-        .score-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-        
-        .score-excellent {
-            background: #10b981;
-            color: white;
-        }
-        
-        .score-good {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .score-needs-work {
-            background: #f59e0b;
-            color: white;
+        .bad-example {
+            color: #e74c3c;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 MBR Insight Formatter</h1>
-        <p class="subtitle">Transform your raw data into compelling, quantitative insight statements</p>
+        <h1>📊 MBR Status Update Formatter</h1>
         
-        <div class="examples">
-            <h3>📌 Example Format</h3>
-            <div class="example-item">
-                <strong>QuickSight Incubator:</strong> <strong>Shifting to micro-learning raised attendance from ~20% to 84%, confirming that shorter, modular formats materially enhance engagement and ongoing participation.</strong>
+        <div class="guidelines">
+            <h3>📋 Guidelines Reminder</h3>
+            <p><strong>A status update must include:</strong></p>
+            <ul>
+                <li><strong>Quantifiable Metric:</strong> Measurable data point</li>
+                <li><strong>Key Driver(s):</strong> What's affecting the metric</li>
+                <li><strong>Context:</strong> Baseline numbers, comparisons, or time periods</li>
+            </ul>
+        </div>
+
+        <div class="form-section">
+            <h3>📝 Input Your Data</h3>
+            
+            <div class="form-group">
+                <label for="metric">Quantifiable Metric *</label>
+                <input type="text" id="metric" placeholder="e.g., Customer satisfaction, Revenue, Response time">
+                <div class="helper-text">What specific metric are you reporting on?</div>
+            </div>
+
+            <div class="form-group">
+                <label for="currentValue">Current Value *</label>
+                <input type="text" id="currentValue" placeholder="e.g., 90%, $2.3M, 2.1 seconds">
+                <div class="helper-text">What is the current measurement?</div>
+            </div>
+
+            <div class="form-group">
+                <label for="contextType">Context Type *</label>
+                <select id="contextType">
+                    <option value="">Select context type...</option>
+                    <option value="baseline">Baseline Comparison</option>
+                    <option value="target">Target Comparison</option>
+                    <option value="period">Period Comparison</option>
+                    <option value="percentage">Percentage of Total</option>
+                    <option value="multiple">Multiple Comparisons</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contextValue">Context Value *</label>
+                <input type="text" id="contextValue" placeholder="e.g., from 85%, target 88%, vs last month">
+                <div class="helper-text">Provide the comparison value or baseline</div>
+            </div>
+
+            <div class="form-group">
+                <label for="driver">Key Driver(s) *</label>
+                <input type="text" id="driver" placeholder="e.g., new training program, supply chain delays, marketing campaign">
+                <div class="helper-text">What is the primary cause or driver of this change?</div>
+            </div>
+
+            <div class="form-group">
+                <label for="action">Resulting Action/Implication</label>
+                <input type="text" id="action" placeholder="e.g., exceeding Q2 target, implementing mitigation plan">
+                <div class="helper-text">What action or implication results from this metric? (Optional)</div>
             </div>
         </div>
-        
-        <form id="mbrForm">
-            <div class="form-group">
-                <label for="project">Project/Initiative Name *</label>
-                <input type="text" id="project" placeholder="e.g., QuickSight Incubator" required>
-                <div class="help-text">What's the name of your project or experiment?</div>
+
+        <button onclick="generateUpdate()">Generate Status Update</button>
+        <button onclick="clearForm()" class="clear-btn">Clear Form</button>
+
+        <div id="validation"></div>
+
+        <div class="output" id="output">
+            Your formatted status update will appear here...
+        </div>
+
+        <div class="examples">
+            <h4>💡 Examples</h4>
+            <div class="example-item good-example">
+                ✅ <strong>Good:</strong> Customer satisfaction increased to 90% (from 85% baseline), exceeding our Q2 target of 88% due to new training program implementation
             </div>
-            
-            <div class="form-group">
-                <label for="action">Action/Change Taken *</label>
-                <input type="text" id="action" placeholder="e.g., Shifting to micro-learning" required>
-                <div class="help-text">What specific change did you make? (use action verbs: shifting, implementing, introducing, etc.)</div>
+            <div class="example-item good-example">
+                ✅ <strong>Good:</strong> Revenue reached $2.3M (15% above target), driven by successful product launch in Q2
             </div>
-            
-            <div class="form-group">
-                <label>Metric Change *</label>
-                <div class="metric-row">
-                    <div>
-                        <input type="text" id="before" placeholder="~20%" required>
-                        <div class="help-text">Before metric</div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div>
-                        <input type="text" id="after" placeholder="84%" required>
-                        <div class="help-text">After metric</div>
-                    </div>
-                </div>
+            <div class="example-item bad-example">
+                ❌ <strong>Bad:</strong> Customer satisfaction improved (missing quantifiable metric and context)
             </div>
-            
-            <div class="form-group">
-                <label for="metricName">What Metric Changed? *</label>
-                <input type="text" id="metricName" placeholder="e.g., attendance, conversion rate, engagement" required>
-                <div class="help-text">What specific metric are you measuring?</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="validation">Validation Type *</label>
-                <select id="validation" required>
-                    <option value="">Choose one...</option>
-                    <option value="confirming">confirming that</option>
-                    <option value="demonstrating">demonstrating that</option>
-                    <option value="validating">validating that</option>
-                    <option value="proving">proving that</option>
-                    <option value="showing">showing that</option>
-                    <option value="revealing">revealing that</option>
-                </select>
-                <div class="help-text">How confident are you in this insight?</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="insight">Key Insight/Learning *</label>
-                <textarea id="insight" placeholder="e.g., shorter, modular formats materially enhance engagement and ongoing participation" required></textarea>
-                <div class="help-text">What principle or learning does this prove? (the "so what?")</div>
-            </div>
-            
-            <button type="submit">✨ Generate MBR Insight</button>
-        </form>
-        
-        <div id="outputSection" class="output-section hidden">
-            <h2>📊 Your MBR Insight Statement</h2>
-            <div class="output-box">
-                <div id="output" class="output-text"></div>
-                <div id="qualityScore" class="quality-score"></div>
-                <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            <div class="example-item bad-example">
+                ❌ <strong>Bad:</strong> Revenue is up (missing specific numbers and drivers)
             </div>
         </div>
     </div>
 
     <script>
-        const form = document.getElementById('mbrForm');
-        const outputSection = document.getElementById('outputSection');
-        const output = document.getElementById('output');
-        const qualityScore = document.getElementById('qualityScore');
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            generateMBR();
-        });
-        
-        function generateMBR() {
-            const project = document.getElementById('project').value.trim();
+        function generateUpdate() {
+            const metric = document.getElementById('metric').value.trim();
+            const currentValue = document.getElementById('currentValue').value.trim();
+            const contextType = document.getElementById('contextType').value;
+            const contextValue = document.getElementById('contextValue').value.trim();
+            const driver = document.getElementById('driver').value.trim();
             const action = document.getElementById('action').value.trim();
-            const before = document.getElementById('before').value.trim();
-            const after = document.getElementById('after').value.trim();
-            const metricName = document.getElementById('metricName').value.trim();
-            const validation = document.getElementById('validation').value;
-            const insight = document.getElementById('insight').value.trim();
+
+            // Validation
+            const validation = validateInputs(metric, currentValue, contextValue, driver);
+            displayValidation(validation);
+
+            if (!validation.isValid) {
+                document.getElementById('output').textContent = 'Please fix the validation errors above to generate your status update.';
+                return;
+            }
+
+            // Generate the status update
+            let update = `${metric} ${generateMetricPhrase(currentValue, contextValue)} due to ${driver}`;
             
-            // Determine verb based on action
-            let verb = 'changed';
-            if (action.toLowerCase().includes('shift')) verb = 'raised';
-            else if (action.toLowerCase().includes('implement')) verb = 'improved';
-            else if (action.toLowerCase().includes('introduc')) verb = 'increased';
-            else if (action.toLowerCase().includes('redesign')) verb = 'enhanced';
-            
-            // Build the MBR statement
-            const mbrStatement = `<strong>${project}:</strong> <strong>${capitalizeFirst(action)} ${verb} ${metricName} from ${before} to ${after}, ${validation} ${insight}.</strong>`;
-            
-            // Display output
-            output.innerHTML = mbrStatement;
-            outputSection.classList.remove('hidden');
-            
-            // Calculate and display quality score
-            const score = calculateQualityScore({project, action, before, after, metricName, validation, insight});
-            displayQualityScore(score);
-            
-            // Smooth scroll to output
-            outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (action) {
+                update += `, ${action}`;
+            }
+
+            document.getElementById('output').textContent = update;
         }
-        
-        function capitalizeFirst(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
+
+        function generateMetricPhrase(currentValue, contextValue) {
+            // Determine if it's an increase, decrease, or neutral
+            const changeWords = ['increased', 'decreased', 'improved', 'declined', 'rose', 'fell', 'reached', 'achieved'];
+            const hasChangeWord = changeWords.some(word => 
+                currentValue.toLowerCase().includes(word) || 
+                contextValue.toLowerCase().includes(word)
+            );
+
+            if (hasChangeWord) {
+                return `(${contextValue})`;
+            } else {
+                return `reached ${currentValue} (${contextValue})`;
+            }
         }
-        
-        function calculateQualityScore(data) {
-            let score = 0;
-            const checks = [];
-            
-            // Check for quantitative metrics
-            if (hasNumbers(data.before) && hasNumbers(data.after)) {
-                score += 25;
-                checks.push('✓ Quantitative metrics');
+
+        function validateInputs(metric, currentValue, contextValue, driver) {
+            const errors = [];
+            const warnings = [];
+
+            // Required field validation
+            if (!metric) errors.push('Quantifiable Metric is required');
+            if (!currentValue) errors.push('Current Value is required');
+            if (!contextValue) errors.push('Context Value is required');
+            if (!driver) errors.push('Key Driver is required');
+
+            // Quality validation
+            if (metric && !hasQuantifiableIndicators(metric)) {
+                warnings.push('Metric should be quantifiable (e.g., include words like rate, percentage, count, time)');
             }
-            
-            // Check for action verbs
-            const actionVerbs = ['shift', 'implement', 'introduc', 'redesign', 'transition', 'adopt', 'consolidat', 'incorporat'];
-            if (actionVerbs.some(verb => data.action.toLowerCase().includes(verb))) {
-                score += 20;
-                checks.push('✓ Strong action verb');
+
+            if (currentValue && !hasNumbers(currentValue)) {
+                errors.push('Current Value must include quantifiable numbers or percentages');
             }
-            
-            // Check insight quality (length and specificity)
-            if (data.insight.length > 30 && data.insight.length < 150) {
-                score += 25;
-                checks.push('✓ Clear, concise insight');
+
+            if (driver && driver.toLowerCase().includes('various') || driver.toLowerCase().includes('multiple factors')) {
+                warnings.push('Try to identify the single most important driver for better focus');
             }
-            
-            // Check for specificity in metric name
-            if (data.metricName.length > 5) {
-                score += 15;
-                checks.push('✓ Specific metric');
-            }
-            
-            // Check project name
-            if (data.project.length > 3) {
-                score += 15;
-                checks.push('✓ Clear project name');
-            }
-            
-            return { score, checks };
+
+            return {
+                isValid: errors.length === 0,
+                errors: errors,
+                warnings: warnings
+            };
         }
-        
-        function hasNumbers(str) {
-            return /\d/.test(str);
+
+        function hasQuantifiableIndicators(text) {
+            const indicators = ['rate', 'percentage', 'count', 'time', 'score', 'index', 'volume', 'revenue', 'cost', 'satisfaction', 'performance'];
+            return indicators.some(indicator => text.toLowerCase().includes(indicator));
         }
-        
-        function displayQualityScore(scoreData) {
-            let badgeClass = 'score-needs-work';
-            let label = 'Needs Work';
-            
-            if (scoreData.score >= 85) {
-                badgeClass = 'score-excellent';
-                label = 'Excellent!';
-            } else if (scoreData.score >= 65) {
-                badgeClass = 'score-good';
-                label = 'Good';
+
+        function hasNumbers(text) {
+            return /\d/.test(text) || text.includes('%') || text.includes('$');
+        }
+
+        function displayValidation(validation) {
+            const validationDiv = document.getElementById('validation');
+            validationDiv.innerHTML = '';
+
+            if (validation.errors.length > 0) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'validation invalid';
+                errorDiv.innerHTML = '<strong>❌ Errors:</strong><br>' + validation.errors.map(error => `• ${error}`).join('<br>');
+                validationDiv.appendChild(errorDiv);
             }
-            
-            qualityScore.innerHTML = `
-                Quality Score: <span class="score-badge ${badgeClass}">${scoreData.score}/100 - ${label}</span>
-                <div style="font-size: 0.85em; font-weight: normal; margin-top: 8px;">
-                    ${scoreData.checks.join(' • ')}
-                </div>
-            `;
+
+            if (validation.warnings.length > 0) {
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'validation warning';
+                warningDiv.innerHTML = '<strong>⚠️ Suggestions:</strong><br>' + validation.warnings.map(warning => `• ${warning}`).join('<br>');
+                validationDiv.appendChild(warningDiv);
+            }
+
+            if (validation.isValid && validation.warnings.length === 0) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'validation valid';
+                successDiv.innerHTML = '<strong>✅ All requirements met!</strong> Your status update follows MBR guidelines.';
+                validationDiv.appendChild(successDiv);
+            }
         }
-        
-        function copyToClipboard() {
-            const textToCopy = output.innerText;
-            
-            navigator.clipboard.writeText(textToCopy).then(function() {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Copied!';
-                btn.classList.add('copied');
-                
-                setTimeout(function() {
-                    btn.textContent = originalText;
-                    btn.classList.remove('copied');
-                }, 2000);
-            }, function() {
-                alert('Copy failed. Please select and copy manually.');
+
+        function clearForm() {
+            document.getElementById('metric').value = '';
+            document.getElementById('currentValue').value = '';
+            document.getElementById('contextType').value = '';
+            document.getElementById('contextValue').value = '';
+            document.getElementById('driver').value = '';
+            document.getElementById('action').value = '';
+            document.getElementById('validation').innerHTML = '';
+            document.getElementById('output').textContent = 'Your formatted status update will appear here...';
+        }
+
+        // Add real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = ['metric', 'currentValue', 'contextValue', 'driver'];
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', function() {
+                    // Optional: Add real-time validation feedback
+                });
             });
-        }
+        });
     </script>
 </body>
 </html>
